@@ -11,9 +11,7 @@ demo(){
 
 	debugWindow := new debugWindow() ; create a debug window with default settings
 	debugWindow3 := new debugWindow("Debug Window 2",1,0,0,400,400) ; create type 1 debug window at top left of screen and 400w&h
-	
-
-	debugWindow2 := new debugWindow("Debug Window 2",2,0,0) ;create a type 2 (msgbox) debug window at left of the screen
+	debugWindow2 := new debugWindow("Debug Window 2",2) ;create a type 2 (msgbox) debug window
 	debugWindow.add("This is a test") ; Insert "this is a test" to the first debug window
 	t:=5
 	Loop %t% {
