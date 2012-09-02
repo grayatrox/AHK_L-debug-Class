@@ -1,14 +1,28 @@
 ; grayatrox's script debugger. 
 ; Inspiration: Didn't want to debug my own code
 ; I have commented most of my code, the stuff I haven't should be self explanitory.
+; This script should be easliy customised to add your own debugging functions into, and although I haven't tested it, most of the vairables might be available too.
 ; As always thanks to the people on IRC and forums such as Nameless Talisman,and GeekDude. (again without knowing what the hell I was doing)
 ; Stuff I stole from the foums will be found next to the code.
+
+/* Function list and description
+DebugWindow := new([WindowTitle=""Debug Window"", type= 1, x=""center"",y=""center"",h=190,w=470]) - Creates a new debug `n" a_tab " window. Type 1 is for the defualt debug dialogue, and type 2 is for a textbox`n`n"
+DebugWindow.help() - This dialogue (using its own debug window 0.o)`n`n"
+DebugWindow.add(string [, UseLineBreak=1]) - Adds the string to the debug window (useLinebreak is currently untested)`n`n"
+DebugWindow.close() - Closes the debug window never to be seen again`n`n"
+DebugWindow.hide() - Hides the debug window`n`n"
+DebugWindow.show() - Shows the debug window`n`n"
+DebugWindow.instanceID() - Returns the instanceId so you can manually edit the controls within the debug window`n`n"
+DebugWindow.clear() - Clears all the text within the debug window, to start fresh`n`n"
+*/
+
+; in consideration - modal dialouge boxes
 
 demo()
 return
 
 demo(){
-
+	
 	debugWindow := new debugWindow() ; create a debug window with default settings
 	debugWindow3 := new debugWindow("Debug Window 2",1,0,0,400,400) ; create type 1 debug window at top left of screen and 400w&h
 	debugWindow2 := new debugWindow("Debug Window 2",2) ;create a type 2 (msgbox) debug window
@@ -26,7 +40,7 @@ demo(){
 	debugWindow.show()
 	debugWindow.help()
 	debugWindow.close() ; We are finished using this debugwindow, so we clear it from memory.
-
+	
 	WinWaitClose,Help Window
 	Loop ; an infinite loop just becuase
 	{
@@ -42,100 +56,100 @@ demo(){
 }
 
 class debugWindow {
-
-    __New(title = "Debug Window", type=1, x="center",y="center",h=190,w=470) { ;Note: if you fill in the h&w params, you must also fill in the ones before it. 
-		Global
-		this.type := type
-		this.title := title
-		initialText := "`n         grayatrox's debug console`n         For Help, call thisObject.help()`n"
-		instanceID += 1
-		
-		Guipositioning := ((x == "center")?():(" x" x))
-		Guipositioning .= ((y == "center")?():(" y" y))
-		Guipositioning .= " h" h " w" w
-				
-		controlPosition := "w" w-17 " h" h-12
-		
-		textBreak := "`n"
-		loop 60
-			textBreak .= "- "
-		textBreak .= "`n`n"
-		
-		; setup the debug options
-		if (this.type == 1){ ; The default debugwindow
-			Gui, DebugWindow%instanceID%:Add, Edit, %controlPosition% vdebug%instanceID% hwndOutputVar readonly,%initialtext%%textBreak%
-			Gui, DebugWindow%instanceID%:Show,%Guipositioning%,%title%
-			this.guiInstance := instanceID
-			this.text :=  initialtext textBreak
-			this.hwnd := OutputVar
-		} else if (this.type != 2) { ; anything else that finds its way into the type var
-			Msgbox, Debug type: %type% is not a valid type!
+	
+	__New(title = "Debug Window", type=1, x="center",y="center",h=190,w=470) { ;Note: if you fill in the h&w params, you must also fill in the ones before it. 
+	Global
+	this.type := type
+	this.title := title
+	initialText := "`n         grayatrox's debug console`n         For Help, call thisObject.help()`n"
+	instanceID += 1
+	
+	Guipositioning := ((x == "center")?():(" x" x))
+	Guipositioning .= ((y == "center")?():(" y" y))
+	Guipositioning .= " h" h " w" w
+	
+	controlPosition := "w" w-17 " h" h-12
+	
+	textBreak := "`n"
+	loop 60
+	textBreak .= "- "
+	textBreak .= "`n`n"
+	
+	; setup the debug options
+	if (this.type == 1){ ; The default debugwindow
+	Gui, DebugWindow%instanceID%:Add, Edit, %controlPosition% vdebug%instanceID% hwndOutputVar readonly,%initialtext%%textBreak%
+	Gui, DebugWindow%instanceID%:Show,%Guipositioning%,%title%
+	this.guiInstance := instanceID
+	this.text :=  initialtext textBreak
+	this.hwnd := OutputVar
+	} else if (this.type != 2) { ; anything else that finds its way into the type var
+	Msgbox, Debug type: %type% is not a valid type!
+}
+;  type 2 is a messagebox, We don't need to set anything up for it.
+}
+close() { ; Destroy hte gui
+guiInstance := this.guiInstance
+if (this.type == 1)
+Gui, DebugWindow%guiInstance%:Destroy
+}
+hide() { ; Hide the gui
+guiInstance := this.guiInstance
+if (this.type == 1)
+Gui, DebugWindow%guiInstance%:Hide
+}
+show() { ; Show the gui
+guiInstance := this.guiInstance
+if (this.type == 1)
+Gui, DebugWindow%guiInstance%:Show
+}
+add(string, lb="1"){ ;add text to the gui
+guiInstance := this.guiInstance
+title := this.title
+global textBreak
+if (this.type == 1){
+	this.text .=  string "`n" ((lb)?(textBreak):())
+	text := this.text
+	GuiControl,DebugWindow%guiInstance%:,debug%guiInstance%, %text%
+	hwnd := this.hwnd
+	SendMessage, 0x0115, 7, 0,, ahk_id %hwnd% ;WM_VSCROLL  ;http://www.autohotkey.com/community/viewtopic.php?t=56717 (scroll to bottom of editbox)
+	Return %ErrorLevel%
+	} else if (this.type == 2){
+		MsgBox, 4356, %Title%, Debug Message: %String%`nDo you wish to continue?
+		IfMsgBox No
+		{
+			Msgbox,,%Title%,The DebugScript will now close %A_ScriptName%.
+			ExitAPP
 		}
-		;  type 2 is a messagebox, We don't need to set anything up for it.
-    }
-    close() { ; Destroy hte gui
-		guiInstance := this.guiInstance
-		if (this.type == 1)
-			Gui, DebugWindow%guiInstance%:Destroy
-    }
-    hide() { ; Hide the gui
-		guiInstance := this.guiInstance
-		if (this.type == 1)
-			Gui, DebugWindow%guiInstance%:Hide
-	}
-	show() { ; Show the gui
-		guiInstance := this.guiInstance
-		if (this.type == 1)
-			Gui, DebugWindow%guiInstance%:Show
-	}
-	add(string, lb="1"){ ;add text to the gui
-		guiInstance := this.guiInstance
-		title := this.title
-		global textBreak
-		if (this.type == 1){
-			this.text .=  string "`n" ((lb)?(textBreak):())
-			text := this.text
-			GuiControl,DebugWindow%guiInstance%:,debug%guiInstance%, %text%
-			hwnd := this.hwnd
-			SendMessage, 0x0115, 7, 0,, ahk_id %hwnd% ;WM_VSCROLL  ;http://www.autohotkey.com/community/viewtopic.php?t=56717 (scroll to bottom of editbox)
-			Return %ErrorLevel%
-		} else if (this.type == 2){
-			MsgBox, 4356, %Title%, Debug Message: %String%`nDo you wish to continue?
-			IfMsgBox No
-			{
-				Msgbox,,%Title%,The DebugScript will now close %A_ScriptName%.
-				ExitAPP
-			}
-
-		}
-	}
-	clear(){ ;remove text currently in the gui
-		guiInstance := this.guiInstance
-		global textBreak,initialText
-		if (this.type == 1){
-			this.text :=  initialText textBreak
-			text := this.text
-			GuiControl,DebugWindow%guiInstance%:,debug%guiInstance%, %text%
-			Return %ErrorLevel%
-		}
-	}
-	instanceID(){
-		guiInstance := this.guiInstance
-		if (this.type == 1)
-			return %guiInstance%
 		
 	}
-	help() {
-		helpText := "DebugWindow := new([WindowTitle=""Debug Window"", type= 1, x=""center"",y=""center"",h=190,w=470]) - Creates a new debug `n" a_tab " window. Type 1 is for the defualt debug dialogue, and type 2 is for a textbox`n`n"
-		helpText .= "DebugWindow.help() - This dialogue (using its own debug window 0.o)`n`n"
-		helpText .= "DebugWindow.add(string [, UseLineBreak=1]) - Adds the string to the debug window (useLinebreak is currently untested)`n`n"
-		helpText .= "DebugWindow.close() - Closes the debug window never to be seen again`n`n"
-		helpText .= "DebugWindow.hide() - Hides the debug window`n`n"
-		helpText .= "DebugWindow.show() - Shows the debug window`n`n"
-		helpText .= "DebugWindow.instanceID() - Returns the instanceId so you can manually edit the controls within the debug window`n`n"
-		helpText .= "DebugWindow.clear() - Clears all the text within the debug window, to start fresh`n`n"
-		
-		helpWindow := new debugWindow("Help Window",1,"center","center",390,670)
-		helpWindow.add(helptext)
-	}	
+}
+clear(){ ;remove text currently in the gui
+guiInstance := this.guiInstance
+global textBreak,initialText
+if (this.type == 1){
+	this.text :=  initialText textBreak
+	text := this.text
+	GuiControl,DebugWindow%guiInstance%:,debug%guiInstance%, %text%
+	Return %ErrorLevel%
+}
+}
+instanceID(){
+	guiInstance := this.guiInstance
+	if (this.type == 1)
+	return %guiInstance%
+	
+}
+help() {
+	helpText := "DebugWindow := new([WindowTitle=""Debug Window"", type= 1, x=""center"",y=""center"",h=190,w=470]) - Creates a new debug `n" a_tab " window. Type 1 is for the defualt debug dialogue, and type 2 is for a textbox`n`n"
+	helpText .= "DebugWindow.help() - This dialogue (using its own debug window 0.o)`n`n"
+	helpText .= "DebugWindow.add(string [, UseLineBreak=1]) - Adds the string to the debug window (useLinebreak is currently untested)`n`n"
+	helpText .= "DebugWindow.close() - Closes the debug window never to be seen again`n`n"
+	helpText .= "DebugWindow.hide() - Hides the debug window`n`n"
+	helpText .= "DebugWindow.show() - Shows the debug window`n`n"
+	helpText .= "DebugWindow.instanceID() - Returns the instanceId so you can manually edit the controls within the debug window`n`n"
+	helpText .= "DebugWindow.clear() - Clears all the text within the debug window, to start fresh`n`n"
+	
+	helpWindow := new debugWindow("Help Window",1,"center","center",390,670)
+	helpWindow.add(helptext)
+}	
 }
