@@ -1,4 +1,4 @@
-; grayatrox's script debugger. v0.8 (according to github)
+; grayatrox's script debugger. v0.9 (according to github)
 ; Inspiration: Didn't want to debug my own code
 ; I have commented most of my code, the stuff I haven't should be self explanitory.
 ; This script should be easliy customised to add your own debugging functions into, and although I haven't tested it, most of the vairables might be available too.
@@ -24,7 +24,6 @@ demo()
 return
 
 demo(){
-	
 	debugWindow := new debugWindow() ; create a debug window with default settings
 	debugWindow3 := new debugWindow("Debug Window 2",1,0,0,400,400) ; create type 1 debug window at top left of screen and 400w&h
 	debugWindow2 := new debugWindow("Debug Window 2",2) ;create a type 2 (msgbox) debug window
@@ -65,7 +64,6 @@ demo(){
 	;                                                  (Also just a friendly reminder to that not everyone has good intentions)
 }
 class debugWindow {
-	
 	__New(title = "Debug Window", type=1, x="center",y="center",h=190,w=470) { ;Note: if you fill in the h&w params, you must also fill in the ones before it. 
 		Global
 		this.debug := true
@@ -159,18 +157,18 @@ class debugWindow {
 		this.debug := false
 	}
 	help() { ; Dispite what you might think, the functionlist is derived from here.
-			helpText := "DebugWindow := new([WindowTitle=""Debug Window"", type= 1, x=""center"",y=""center"",h=190,w=470]) - Creates a new debug `n" a_tab " window. Type 1 is for the defualt debug dialogue, and type 2 is for a textbox`n`n"
-			helpText .= "DebugWindow.help() - This dialogue (using its own debug window 0.o)`n`n"
-			helpText .= "DebugWindow.add(string [, UseLineBreak=1]) - Adds the string to the debug window (useLinebreak is currently untested)`n`n"
-			helpText .= "DebugWindow.close() - Closes the debug window never to be seen again`n`n"
-			helpText .= "DebugWindow.hide() - Hides the debug window`n`n"
-			helpText .= "DebugWindow.show() - Shows the debug window`n`n"
-			helpText .= "DebugWindow.instanceID() - Returns the instanceId so you can manually edit the controls within the debug window`n`n"
-			helpText .= "DebugWindow.clear() - Clears all the text within the debug window, to start fresh`n`n"
-			helpText .= "DebugWindow.on() - Turns on all future debugging windows for this debug instance`n`n"
-			helpText .= "DebugWindow.off() - Turns off all future debugging windows for this debug instance`n`n"
-			
-			helpWindow := new debugWindow("Help Window",1,"center","center",390,670)
-			helpWindow.add(helptext)
-		}	
+		helpText := "DebugWindow := new([WindowTitle=""Debug Window"", type= 1, x=""center"",y=""center"",h=190,w=470]) - Creates a new debug `n" a_tab " window. Type 1 is for the defualt debug dialogue, and type 2 is for a textbox`n`n"
+		helpText .= "DebugWindow.help() - This dialogue (using its own debug window 0.o)`n`n"
+		helpText .= "DebugWindow.add(string [, UseLineBreak=1]) - Adds the string to the debug window (useLinebreak is currently untested)`n`n"
+		helpText .= "DebugWindow.close() - Closes the debug window never to be seen again`n`n"
+		helpText .= "DebugWindow.hide() - Hides the debug window`n`n"
+		helpText .= "DebugWindow.show() - Shows the debug window`n`n"
+		helpText .= "DebugWindow.instanceID() - Returns the instanceId so you can manually edit the controls within the debug window`n`n"
+		helpText .= "DebugWindow.clear() - Clears all the text within the debug window, to start fresh`n`n"
+		helpText .= "DebugWindow.on() - Turns on all future debugging windows for this debug instance`n`n"
+		helpText .= "DebugWindow.off() - Turns off all future debugging windows for this debug instance`n`n"
+		
+		helpWindow := new debugWindow("Help Window",1,"center","center",390,670)
+		helpWindow.add(helptext)
+	}	
 }
