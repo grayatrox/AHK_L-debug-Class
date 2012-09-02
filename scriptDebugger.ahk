@@ -16,7 +16,7 @@ DebugWindow.instanceID() - Returns the instanceId so you can manually edit the c
 DebugWindow.clear() - Clears all the text within the debug window, to start fresh`n`n"
 */
 
-; in consideration - modal dialouge boxes
+; n consideration - modal dialouge boxes
 
 demo()
 return
@@ -28,12 +28,14 @@ demo(){
 	debugWindow2 := new debugWindow("Debug Window 2",2) ;create a type 2 (msgbox) debug window
 	debugWindow.add("This is a test") ; Insert "this is a test" to the first debug window
 	t:=5
-	Loop %t% {
+	Loop %t% 
+	{
 		debugWindow.add("The show will continue in: " t-A_index) ; Same as last add command, but inside a loop.
 		debugWindow3.add("The show will continue in: " t-A_index) ; Same as last add command, but inside a loop.
 		sleep 1000
 	}
 	debugWindow.hide() ; hide the first debug window
+	debugWindow3.clear()
 	debugWindow2.add("This is also a test") ;display "this is also a test" a dialogue with the option to continue running the script
 	debugWindow3.close()
 	debugWindow.add("And Another") ;we now add more text to the first debug window
@@ -54,7 +56,6 @@ demo(){
 	; I really hope you are reading through this befoe you run the demo, because who knows, I maybe REALLY EVIL! :} 
 	;                                                  (Also just a friendly reminder to that not everyone has good intentions)
 }
-
 class debugWindow {
 	
 	__New(title = "Debug Window", type=1, x="center",y="center",h=190,w=470) { ;Note: if you fill in the h&w params, you must also fill in the ones before it. 
