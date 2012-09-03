@@ -1,4 +1,4 @@
-; grayatrox's script debugger. v0.9 (according to github)
+; grayatrox's script debugger. v0.1.0 (according to github)
 ; Inspiration: Didn't want to debug my own code
 ; I have commented most of my code, the stuff I haven't should be self explanitory.
 ; This script should be easliy customised to add your own debugging functions into, and although I haven't tested it, most of the vairables might be available too.
@@ -16,13 +16,8 @@ DebugWindow.instanceID() - Returns the instanceId so you can manually edit the c
 DebugWindow.clear() - Clears all the text within the debug window, to start fresh
 DebugWindow.on() - Turns on all future debugging windows for this debug instance
 DebugWindow.off() - Turns off all future debugging windows for this debug instance
-*/
 
-; n consideration - modal dialouge boxes
-
-demo()
-return
-
+; n consideration - modal dialoug
 demo(){
 	debugWindow := new debugWindow() ; create a debug window with default settings
 	debugWindow3 := new debugWindow("Debug Window 2",1,0,0,400,400) ; create type 1 debug window at top left of screen and 400w&h
@@ -55,7 +50,7 @@ demo(){
 			debugWindow2.add("Oh Look! We are inside an infinite loop, and it's not the end of the world!`n(Click No, otherwise it will be)")
 			Msgbox Lol! Whoops. I forgot to turn on debugging. Hang on a sec.
 			debugWindow2.On()
-			debugWindow2.add("You will have to go back and check the code on line 54 to see what I said, but you should trust me and click no.")
+			debugWindow2.add("You will have to go back and check the code on line 55 to see what I said, but you should trust me and click no.")
 			ExitApp ; If you were silly and clicked yes becuase that's how you roll, I'll kill it for you. 
 		}
 		sleep 500
@@ -63,6 +58,7 @@ demo(){
 	; I really hope you are reading through this befoe you run the demo, because who knows, I maybe REALLY EVIL! :} 
 	;                                                  (Also just a friendly reminder to that not everyone has good intentions)
 }
+*/
 class debugWindow {
 	__New(title = "Debug Window", type=1, x="center",y="center",h=190,w=470) { ;Note: if you fill in the h&w params, you must also fill in the ones before it. 
 		Global
